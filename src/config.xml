@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<widget xmlns="http://wirecloud.conwet.fi.upm.es/ns/macdescription/1" vendor="CoNWeT" name="spy-wiring" version="0.1.0">
+  <details>
+    <title>Spy Wiring</title>
+    <email>mgarcia@conwet.com</email>
+    <image></image>
+    <smartphoneimage></smartphoneimage>
+    <description>Spy Wiring is a widget to do a "Man in the Middle" of wiring, you can see, modify, pause and drop wiring data</description>
+    <authors>Miguel Garcia Lafuente</authors>
+    <changelog>doc/changelog.md</changelog>
+    <doc>doc/index.md</doc>
+  </details>
+  <preferences>
+    <preference name="MITM" label="Pipe data?" description="Set if want to pipe the data or not" type="boolean" default="true"/>
+  </preferences>
+  <wiring>
+    <inputendpoint name="textinput" type="text" label="Text Input" description="" friendcode="*"/>
+    <outputendpoint name="textoutput" type="text" label="Text output" description="" friendcode="*"/>
+  </wiring>
+  <contents src="index.html"/>
+  <rendering height="47" width="5"/>
+</widget>
