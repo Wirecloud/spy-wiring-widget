@@ -2,13 +2,9 @@
     "name": "SpyWiring",
     "dependencies": {
         "jquery": null,
-        "jsoneditor": "4.2.1",
-        "bootstrap": "3.3.5"
+        "jsoneditor": "4.2.1"
     },
     "exportsOverride": {
-        "bootstrap": {
-            "css": "dist/css/bootstrap.min.css"
-        },
         "jsoneditor": {
             "js": "dist/jsoneditor.min.js",
             "css": "dist/jsoneditor.min.css",

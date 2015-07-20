@@ -1,34 +1,10 @@
 <html>
     <head>
         <meta content="charset=utf-8" />
-        <link rel="stylesheet" type="text/css" href="lib/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/styles.css">
         <link rel="stylesheet" type="text/css" href="lib/css/jsoneditor.min.css">
     </head>
     <body>
-        <div class="navbar navbar-default navbar-fixed-top">
-            <div class="container-fluid">
-                <div class="navbar-header navbar-left">
-                    <p id="type" class="text-primary">
-                        Type: <span id="type-data">No data</span>
-                    </p>
-                </div>
-                <form id="form-clear" class="navbar-form form-inline navbar-right">
-                    <button id="stack-n" disabled="true" type="button" class="btn btn-primary">0</button>
-                    <button id="playbtn" type="button" class="btn btn-success">&#9654;</button>
-                    <button id="runbtn" disabled="true"  type="button" class="btn btn-info">Run</button>
-                    <button id="stepbtn" disabled="true"  type="button" class="btn btn-info">Step</button>
-                    <button id="dropbtn" disabled="true"  type="button" class="btn btn-info">Drop</button>
-                </form>
-            </div>
-        </div>
-        <div class="content navbar-brand">
-            <p id="content" class="text-success">
-                Content:<br/>
-            </p>
-        </div>
-        <div id="jsoneditor"></div>
-        <!-- <pre id="content-data">No data received</pre> -->
         <script src="lib/js/jsoneditor.min.js"></script>
         <script src="lib/js/jquery.min.js"></script>
         <script src="js/main.js"></script>

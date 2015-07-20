@@ -1,21 +1,32 @@
-/*global $,  MashupPlatform, JSONEditor*/
+/*global $, MashupPlatform, JSONEditor, StyledElements*/
+
 (function () {
+
     "use strict";
 
-    var send = true;
+    var MP = MashupPlatform;
+
+    var layout = new StyledElements.BorderLayout();
+    layout.insertInto(document.body);
+    layout.getNorthContainer().addClassName('header');
+    layout.getNorthContainer().wrapperElement.innerHTML = '<h4 class="text-primary">Type: <span id="type-data">No data</span></h4><div id="buttons"></div>';
+
     var typed = $("#type-data");
-    // var contentd = $("#content-data")[0];
 
     var TEXT = 'textoutput';
 
-    var playunicode = '&#9654;';
-    var pauseunicode = '&#9646;&#9646;';
-
-    var playbtn = $('#playbtn');
-    var runbtn = $('#runbtn');
-    var stepbtn = $('#stepbtn');
-    var dropbtn = $('#dropbtn');
-    var stack_n = $('#stack-n');
+    var stack_n = document.createElement('div');
+    document.getElementById('buttons').appendChild(stack_n);
+    stack_n.className = 'badge badge-info';
+    stack_n.textContent = '0';
+    var playbtn = new StyledElements.Button({'class': 'btn-danger icon-circle', 'title': 'Start recording events'});
+    playbtn.insertInto(document.getElementById('buttons'));
+    var runbtn = new StyledElements.Button({'class': 'btn-info icon-fast-forward', 'title': 'Launch all pending events'});
+    runbtn.insertInto(document.getElementById('buttons'));
+    var stepbtn = new StyledElements.Button({'class': 'btn-info icon-step-forward', 'title': 'Launch current event'});
+    stepbtn.insertInto(document.getElementById('buttons'));
+    var dropbtn = new StyledElements.Button({'class': 'btn-info icon-trash', 'title': 'Drop current event'});
+    dropbtn.insertInto(document.getElementById('buttons'));
 
     var playing = true;
 
@@ -29,13 +40,13 @@
         }
     };
 
-    var container = document.getElementById("jsoneditor");
-    var editor = new JSONEditor(container, options);
+    layout.getCenterContainer().addClassName('jsoncontainer');
+    var editor = new JSONEditor(layout.getCenterContainer().wrapperElement, options);
 
     var stack = [];
 
     var updateType = function (type) {
-        typed.text(type);
+        typed.textContent = type;
     };
 
     var parse_data = function (d) {
@@ -60,66 +71,66 @@
 
     var updateContent = function (d) {
         if (!playing) {
-            stack.push(d);
-            var n = parseInt(stack_n.text()) + 1;
-            stack_n.text(n);
+            stack.unshift(d);
+            var n = parseInt(stack_n.textContent) + 1;
+            stack_n.textContent = n;
+            if (stack.length === 1) {
+                // first events
+                parse_data(d);
+            }
+            setdisable_btns(false);
         } else {
             parse_data(d);
         }
     };
 
-    var loadPrefs = function () {
-        send = MashupPlatform.prefs.get('MITM');
+    var updateStackInfo = function updateStackInfo() {
+        stack_n.textContent = stack.length;
+        setdisable_btns(stack.length === 0);
     };
 
     var sendData = function (type, data) {
-        if (send) {
-            if (typeof data === "undefined") {
-                data = editor.getText();
-                var next = 'No data';
-                if (stack.length > 0) {
-                    next = stack.shift();
-                    var n = parseInt(stack_n.text()) - 1;
-                    stack_n.text(n);
-                }
-                parse_data(next);
+        if (typeof data === "undefined") {
+            data = stack.pop();
+            var next = 'No data';
+            if (stack.length > 0) {
+                next = stack[stack.length - 1];
             }
-            if (data !== "No data") {
-                MashupPlatform.wiring.pushEvent(type, data);
-            }
+            updateStackInfo();
+            parse_data(next);
+        }
+        if (data !== "No data") {
+            MP.wiring.pushEvent(type, data);
         }
     };
 
     var change_class = function (elem, c1, c2) {
-        elem.removeClass(c1);
-        elem.addClass(c2);
+        elem.removeClassName(c1);
+        elem.addClassName(c2);
     };
 
     var setdisable_btns = function (value) {
-        runbtn.prop('disabled', value);
-        stepbtn.prop('disabled', value);
-        dropbtn.prop('disabled', value);
+        runbtn.setDisabled(value);
+        stepbtn.setDisabled(value);
+        dropbtn.setDisabled(value);
     };
 
     var play_proxy = function () {
         playing = true;
-        playbtn.html(playunicode);
-        change_class(playbtn, 'btn-danger', 'btn-success');
+        change_class(playbtn, 'icon-stop', 'icon-circle');
+        change_class(playbtn, 'btn-success', 'btn-danger');
+        run_action();
+        playbtn.setTitle('Start recording events');
+        parse_data('No data');
         setdisable_btns(true);
-
-        if (stack.length > 0) {
-            while (stack.length > 0) {
-                sendData(TEXT);
-            }
-            parse_data('No data');
-        }
     };
 
     var pause_proxy = function () {
+        parse_data('No data');
         playing = false;
-        playbtn.html(pauseunicode);
-        change_class(playbtn, 'btn-success', 'btn-danger');
-        setdisable_btns(false);
+        change_class(playbtn, 'icon-circle', 'icon-stop');
+        change_class(playbtn, 'btn-danger', 'btn-success');
+        playbtn.setTitle('Stop recording events (Launch all pending events)');
     };
 
     var play_action = function () {
@@ -131,8 +142,9 @@
     };
 
     var run_action = function () {
-
-        play_proxy();
+        while (stack.length > 0) {
+            sendData(TEXT);
+        }
     };
 
     var step_action = function () {
@@ -141,36 +153,36 @@
 
 
     var drop_action = function () {
-        var data = editor.getText();
-        if (data !== 'No data') {
+        if (stack.length > 0) {
+            stack.shift();
             var next = 'No data';
             if (stack.length > 0) {
-                next = stack.shift();
-                var n = parseInt(stack_n.text()) - 1;
-                stack_n.text(n);
+                next = stack[stack.length - 1];
             }
+            updateStackInfo();
             parse_data(next);
         }
     };
 
-
+    setdisable_btns(true);
     updateContent('No data');
 
-    playbtn.on("click", play_action);
-    runbtn.on('click', run_action);
-    stepbtn.on('click', step_action);
-    dropbtn.on('click', drop_action);
+    playbtn.addEventListener("click", play_action);
+    runbtn.addEventListener('click', run_action);
+    stepbtn.addEventListener('click', step_action);
+    dropbtn.addEventListener('click', drop_action);
 
-    if (typeof MashupPlatform !== 'undefined') {
-        MashupPlatform.prefs.registerCallback(function () {
-            loadPrefs();
-        });
+    layout.repaint();
 
-        MashupPlatform.wiring.registerCallback('textinput', function (data) {
-            updateContent(data);
-            if (playing) {
-                sendData(TEXT, data);
-            }
-        });
-    }
+    MP.wiring.registerCallback('textinput', function (data) {
+        updateContent(data);
+        if (playing) {
+            sendData(TEXT, data);
+        }
+    });
+
+    MP.widget.context.registerCallback(function (new_values) {
+        layout.repaint();
+    });
+
 })();

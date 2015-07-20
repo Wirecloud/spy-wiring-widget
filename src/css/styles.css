@@ -1,90 +1,22 @@
-body {
-    margin: 0;
-    position: relative;
+html, body {
+    margin: 0px;
+    padding: 0px;
 }
 
-.hide {
-    display: none;
-}
-
-.navbar {
-    margin-bottom: 0;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    z-index: 1;
-}
-
-.navbar-header {
-    float: left;
-}
-.navbar-header .navbar-brand {
-    padding: 0;
-}
-.navbar-header .navbar-brand > img {
-    margin-top: 6px;
-    margin-left: 20px;
-    height: 40px;
-}
-
-.navbar-form {
-    width: auto;
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-right: 0;
-    margin-left: 0;
-    border: 0;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-}
-.navbar-form .form-group {
-    display: inline-block;
-    margin-bottom: 0;
-    vertical-align: middle;
-}
-
-.navbar-left {
-    float: left;
-}
-
-.navbar-right {
-    float: right;
-}
-
-.container-fluid > .navbar-header {
-    margin-right: 0px;
-}
-
-.navbar-brand
-{
-    width: 100%;
-    left: 0;
-    margin: auto;
+.header {
+    background-color: rgb(248, 248, 248);
+    border: 1px solid rgb(231, 231, 231);
 }
 
 .text-primary {
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 14px;
-    line-height: 1.42857143;
-    margin-top: 1em;
-    margin-left: 5px;
+    float: left;
+    margin-left: 10px;
 }
 
-#content {
-    text-align: center;
-    position: absolute;
-    top: 51px;
-    left: 0px;
-    z-index: 2;
-    width: 100%;
+#buttons {
+    float: right;
 }
 
-#jsoneditor {
-    margin-left: 5px;
-    margin-right: 5px;
-    position: absolute;
-    top: 101px;
-    left: 0px;
-    z-index: 3;
-    width: 99%;
+.jsoncontainer {
+    padding: 2px;
 }
