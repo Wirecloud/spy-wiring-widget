@@ -19,13 +19,13 @@
     document.getElementById('buttons').appendChild(stack_n);
     stack_n.className = 'badge badge-info';
     stack_n.textContent = '0';
-    var playbtn = new StyledElements.Button({'class': 'btn-danger icon-circle', 'title': 'Start recording events'});
+    var playbtn = new StyledElements.StyledButton({'class': 'btn-danger icon-circle', 'title': 'Start recording events'});
     playbtn.insertInto(document.getElementById('buttons'));
-    var runbtn = new StyledElements.Button({'class': 'btn-info icon-fast-forward', 'title': 'Launch all pending events'});
+    var runbtn = new StyledElements.StyledButton({'class': 'btn-info icon-fast-forward', 'title': 'Launch all pending events'});
     runbtn.insertInto(document.getElementById('buttons'));
-    var stepbtn = new StyledElements.Button({'class': 'btn-info icon-step-forward', 'title': 'Launch current event'});
+    var stepbtn = new StyledElements.StyledButton({'class': 'btn-info icon-step-forward', 'title': 'Launch current event'});
     stepbtn.insertInto(document.getElementById('buttons'));
-    var dropbtn = new StyledElements.Button({'class': 'btn-info icon-trash', 'title': 'Drop current event'});
+    var dropbtn = new StyledElements.StyledButton({'class': 'btn-info icon-trash', 'title': 'Drop current event'});
     dropbtn.insertInto(document.getElementById('buttons'));
 
     var playing = true;
