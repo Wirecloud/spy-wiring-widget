@@ -13,9 +13,6 @@
   <requirements>
       <feature name="StyledElements"/>
   </requirements>
-  <preferences>
-    <preference name="MITM" label="Pipe data?" description="Set if want to pipe the data or not" type="boolean" default="true"/>
-  </preferences>
   <wiring>
     <inputendpoint name="textinput" type="text" label="Text Input" description="" friendcode="*"/>
     <outputendpoint name="textoutput" type="text" label="Text output" description="" friendcode="*"/>
