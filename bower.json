@@ -1,7 +1,7 @@
 {
     "name": "SpyWiring",
     "dependencies": {
-        "jquery": null,
+        "jquery": "~2.1.4",
         "jsoneditor": "4.2.1"
     },
     "exportsOverride": {

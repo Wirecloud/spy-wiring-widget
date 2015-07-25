@@ -1,20 +1,8 @@
 {
-    "name": "SpyWiring",
+    "name": "spy-wiring",
     "homepage": "",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "vendor": "CoNWeT",
-    "author": "Miguel Garcia Lafuente",
-    "description": "Spy Wiring is a widget to do a \"Man in the Middle\" of wiring, you can see, modify, pause and drop wiring data",
-    "repository": {
-        "type": "git",
-        "url": ""
-    },
-    "bugs": {
-        "url": ""
-    },
-    "keywords": [
-        "widget"
-    ],
     "license": {
         "type": "Apache v2",
         "url": "http://www.apache.org/licenses/"
