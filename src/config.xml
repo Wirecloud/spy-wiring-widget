@@ -6,7 +6,8 @@
     <image></image>
     <smartphoneimage></smartphoneimage>
     <description>Spy Wiring is a widget to do a "Man in the Middle" of wiring, you can see, modify, pause and drop wiring data</description>
-    <authors>Miguel Garcia Lafuente</authors>
+    <longdescription>DESCRIPTION.md</description>
+    <authors>Miguel Garcia Lafuente &lt;mgarcia@conwet.com&gt;</authors>
     <changelog>doc/changelog.md</changelog>
     <doc>doc/index.md</doc>
   </details>

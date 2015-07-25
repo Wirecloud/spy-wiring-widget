@@ -48,6 +48,7 @@ module.exports = function (grunt) {
                             'css/**/*',
                             'doc/**/*',
                             'images/**/*',
+                            'DESCRIPTION.md',
                             'index.html',
                             'config.xml'
                         ]
