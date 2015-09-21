@@ -46,6 +46,8 @@
 
     var playing = true;
 
+    var allowsend = false;
+
     var modes = ['code', 'form', 'text', 'tree', 'view'];
 
     var options = {
@@ -107,14 +109,24 @@
 
     var sendData = function (type, data) {
         if (typeof data === "undefined") {
+            var editordata = editor.getText();
             data = stack.pop();
+
+            if (data !== editordata) {
+                data = editordata;
+            }
+
             var next = 'No data';
             if (stack.length > 0) {
                 next = stack[stack.length - 1];
+            } else if (allowsend) {
+                next = data;
+                stack.push(data);
             }
             updateStackInfo();
             parse_data(next);
         }
+
         if (data !== "No data") {
             MP.wiring.pushEvent(type, data);
         }
@@ -129,6 +141,12 @@
         runbtn.setDisabled(value);
         stepbtn.setDisabled(value);
         dropbtn.setDisabled(value);
+        if (allowsend) {
+            playbtn.setDisabled(true);
+            runbtn.setDisabled(true);
+            dropbtn.setDisabled(true);
+            stepbtn.setDisabled(false);
+        }
     };
 
     var play_proxy = function () {
@@ -201,4 +219,25 @@
         layout.repaint();
     });
 
+    var loadprefs = function loadprefs(data) {
+        if (typeof data === "undefined") {
+            data = {};
+            data.allowsend = MP.prefs.get("allowsend");
+        }
+
+        if ('allowsend' in data) {
+            allowsend = data.allowsend;
+            if (data.allowsend) {
+                pause_proxy();
+                updateContent("{}");
+                setdisable_btns(true);
+            } else {
+                drop_action();
+                play_proxy();
+            }
+        }
+    };
+
+    MP.prefs.registerCallback(loadprefs);
+    $(document).ready(function () {loadprefs();});
 })();
