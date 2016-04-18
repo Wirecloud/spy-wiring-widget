@@ -14,13 +14,16 @@
  *   limitations under the License.
  */
 
+var ConfigParser = require('wirecloud-config-parser');
+var parser = new ConfigParser('src/config.xml');
+
 module.exports = function (grunt) {
 
     'use strict';
 
     grunt.initConfig({
 
-        pkg: grunt.file.readJSON('package.json'),
+        metadata: parser.getData(),
 
         bower: {
             install: {
@@ -36,22 +39,76 @@ module.exports = function (grunt) {
             }
         },
 
+        jshint: {
+            options: {
+                jshintrc: true
+            },
+            all: {
+                files: {
+                    src: ['src/js/**/*.js']
+                }
+            },
+            grunt: {
+                options: {
+                    jshintrc: '.jshintrc-node'
+                },
+                files: {
+                    src: ['Gruntfile.js']
+                }
+            }
+        },
+
+        jscs: {
+            widget: {
+                src: 'src/js/**/*.js',
+                options: {
+                    config: ".jscsrc"
+                }
+            },
+            grunt: {
+                src: 'Gruntfile.js',
+                options: {
+                    config: ".jscsrc"
+                }
+            }
+        },
+
+        copy: {
+            main: {
+                files: [
+                    {expand: true, cwd: 'src/js', src: '*', dest: 'build/src/js'}
+                ]
+            }
+        },
+
+        strip_code: {
+            multiple_files: {
+                src: ['build/src/js/**/*.js']
+            },
+            imports: {
+                options: {
+                    start_comment: 'import-block',
+                    end_comment: 'end-import-block'
+                },
+                src: ['src/js/*.js']
+            }
+        },
 
         compress: {
             widget: {
                 options: {
                     mode: 'zip',
-                    archive: 'dist/<%= pkg.vendor %>_<%= pkg.name %>_<%= pkg.version %>.wgt'
+                    archive: 'dist/<%= metadata.vendor %>_<%= metadata.name %>_<%= metadata.version %>.wgt'
                 },
                 files: [
                     {
                         expand: true,
                         cwd: 'src',
                         src: [
+                            'DESCRIPTION.md',
                             'css/**/*',
                             'doc/**/*',
                             'images/**/*',
-                            'DESCRIPTION.md',
                             'index.html',
                             'config.xml'
                         ]
@@ -90,88 +147,38 @@ module.exports = function (grunt) {
             }
         },
 
-        copy: {
-            main: {
-                files: [
-                    {expand: true, cwd: 'src/js', src: '*', dest: 'build/src/js'}
-                ]
-            }
-        },
-
-        strip_code: {
-            multiple_files: {
-                src: ['build/src/js/**/*.js']
-            }
-        },
-
-        replace: {
-            version: {
+        wirecloud: {
+            options: {
                 overwrite: true,
-                src: ['src/config.xml'],
-                replacements: [{
-                    from: /version=\"[0-9]+\.[0-9]+\.[0-9]+(([ab]|rc)?[0-9]+)?(-dev)?\"/g,
-                    to: 'version="<%= pkg.version %>"'
-                }]
-            }
-        },
-
-        jscs: {
-            src: 'src/js/**/*.js',
-            options: {
-                config: ".jscsrc"
-            }
-        },
-
-        jshint: {
-            options: {
-                jshintrc: true
+                instance: 'conwet'
             },
-            all: {
-                files: {
-                    src: ['src/js/**/*.js']
-                }
-            },
-            grunt: {
-                options: {
-                    jshintrc: '.jshintrc-node'
-                },
-                files: {
-                    src: ['Gruntfile.js']
-                }
-            },
-            test: {
-                options: {
-                    jshintrc: '.jshintrc-jasmine'
-                },
-                files: {
-                    src: ['src/test/**/*.js', '!src/test/fixtures/']
-                }
+            publish: {
+                file: 'dist/<%= metadata.vendor %>_<%= metadata.name %>_<%= metadata.version %>.wgt'
             }
         }
     });
 
     grunt.loadNpmTasks('grunt-wirecloud');
     grunt.loadNpmTasks('grunt-bower-task');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-jscs');
     grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-jscs');
     grunt.loadNpmTasks('grunt-strip-code');
     grunt.loadNpmTasks('grunt-text-replace');
 
     grunt.registerTask('test', [
         'bower:install',
-        'jshint:grunt',
         'jshint',
-        'jscs',
+        'jshint:grunt',
+        'jscs'
     ]);
 
     grunt.registerTask('build', [
         'clean:temp',
         'copy:main',
         'strip_code',
-        'replace:version',
         'compress:widget'
     ]);
 
@@ -184,4 +191,5 @@ module.exports = function (grunt) {
         'default',
         'wirecloud'
     ]);
+
 };
