@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2015 CoNWeT Lab., Universidad Politécnica de Madrid
+ * Copyright (c) 2013-2016 CoNWeT Lab., Universidad Politécnica de Madrid
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
     layout.getNorthContainer().addClassName('header');
     layout.getNorthContainer().wrapperElement.innerHTML = '<h4 class="text-primary">Type: <span id="type-data">No data</span></h4><div id="buttons"></div>';
 
-    var typed = $("#type-data");
+    var typed = $("#type-data")[0];
 
     var TEXT = 'textoutput';
 
