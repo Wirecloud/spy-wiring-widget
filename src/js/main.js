@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*global $, MashupPlatform, JSONEditor, StyledElements*/
+/* globals $, MashupPlatform, JSONEditor, StyledElements*/
 
 (function () {
 
@@ -63,37 +63,52 @@
 
     var stack = [];
 
-    var updateType = function (type) {
+    var updateType = function updateType(type) {
         typed.textContent = type;
     };
 
-    var parse_data = function (d) {
-        try {
-            var tmp = JSON.parse(d);
-            updateType("JSON - (Text)");
-            editor.options.modes = modes;
-            editor.set(tmp);
-            if (editor.options.mode === "text") {
-                editor.setMode("tree");
+    var parse_json = function parse_json(json, type) {
+        editor.options.modes = modes;
+        editor.set(json);
+        if (editor.options.mode === "text") {
+            editor.setMode("tree");
+        }
+        if (editor.options.mode !== 'code') {
+            editor.expandAll();
+        }
+        updateType(type);
+    };
+
+    var parse_data = function parse_data(d) {
+        if (typeof d === 'string') {
+            try {
+                var tmp = JSON.parse(d);
+                parse_json(tmp, "JSON - (Text)");
+            } catch (err) {
+                updateType("Text");
+                editor.options.modes = ['text'];
+                editor.setMode('text');
+                editor.setText(d);
             }
-            if (editor.options.mode !== 'code') {
-                editor.expandAll();
-            }
-        } catch (err) {
-            updateType("Text");
-            editor.options.modes = ['text'];
-            editor.setMode('text');
-            editor.setText(d);
+        } else {
+            parse_json(d, "JSON - (Object)");
         }
     };
 
-    var updateContent = function (d) {
+    var clearEvents = function clearEvents() {
+        updateType('No data');
+        editor.options.modes = ['text'];
+        editor.setMode('text');
+        editor.setText('No data');
+    };
+
+    var updateContent = function updateContent(d) {
         if (!playing) {
             stack.unshift(d);
             var n = parseInt(stack_n.textContent) + 1;
             stack_n.textContent = n;
             if (stack.length === 1) {
-                // first events
+                // first event
                 parse_data(d);
             }
             setdisable_btns(false);
