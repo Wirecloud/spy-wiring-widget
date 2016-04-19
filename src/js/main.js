@@ -44,7 +44,7 @@
     var dropbtn = new StyledElements.StyledButton({'class': 'btn-info icon-trash', 'title': 'Drop current event'});
     dropbtn.insertInto(document.getElementById('buttons'));
 
-    var playing = true;
+    var recording = false;
 
     var allowsend = false;
 
@@ -103,7 +103,7 @@
     };
 
     var updateContent = function updateContent(d) {
-        if (!playing) {
+        if (recording) {
             stack.unshift(d);
             var n = parseInt(stack_n.textContent) + 1;
             stack_n.textContent = n;
@@ -165,7 +165,7 @@
     };
 
     var play_proxy = function () {
-        playing = true;
+        recording = false;
         change_class(playbtn, 'icon-stop', 'icon-circle');
         change_class(playbtn, 'btn-success', 'btn-danger');
         run_action();
@@ -176,17 +176,19 @@
 
     var pause_proxy = function () {
         parse_data('No data');
-        playing = false;
+        recording = true;
         change_class(playbtn, 'icon-circle', 'icon-stop');
         change_class(playbtn, 'btn-danger', 'btn-success');
         playbtn.setTitle('Stop recording events (Launch all pending events)');
     };
 
     var play_action = function () {
-        if (playing) {
-            pause_proxy();
-        } else {
+        if (recording) {
+            // Stop recording, send all events
             play_proxy();
+        } else {
+            // Start recording events
+            pause_proxy();
         }
     };
 
@@ -225,7 +227,7 @@
 
     MP.wiring.registerCallback('textinput', function (data) {
         updateContent(data);
-        if (playing) {
+        if (!recording) {
             sendData(TEXT, data);
         }
     });
