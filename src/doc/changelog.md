@@ -1,3 +1,9 @@
+v1.0.2
+======
+
+- Add initial object event support
+- Fix Type label
+
 v1.0.1
 ======
 
