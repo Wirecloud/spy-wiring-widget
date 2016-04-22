@@ -70,7 +70,11 @@
     var parse_json = function parse_json(json, type) {
         editor.options.modes = modes;
         editor.set(json);
-        if (editor.options.mode === "text") {
+
+        if (editor.options.mode === "tree") {
+            editor.setMode("text"); //Force the editor to refresh, since if its already on tree mode it gets bugged (lol)
+            editor.setMode("tree");
+        } else if (editor.options.mode === "text") {
             editor.setMode("tree");
         }
         if (editor.options.mode !== 'code') {
