@@ -301,6 +301,7 @@
             } else {
                 drop_action();
                 play_proxy();
+                playbtn.setDisabled(false);
             }
         }
     };
