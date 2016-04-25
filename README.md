@@ -41,27 +41,26 @@ If everything goes well, you will find a wgt file in the `build` folder.
 
 ## Settings
 
-`Write here the preferences`
+- `Allow send data`: If this preference is set to true, the widget enters the "allow-send mode" where new events can be created and sent events won't be destroyed.
 
 ## Wiring
 
-
 ### Input Endpoints
 
-`Write here the input wiring endpoints`
-
+- `Input`: The data to be analyzed.
 
 ### Output Endpoints
 
-
-`Write here the output wiring endpoints`
+- `Output`: The endpoint where the received data will be sent.
 
 ## Usage
 
+Plug in the output endpoint you want to spy and it will be displayed on the widget.
+If the record mode is activated, data won't be sent forward until the step or run buttons are pressed. While on this mode, data can be edited and the modified data will be sent instead.
 
-## Reference
+If the `Allow send data` preference is set to true, new events can be created through the widget. While on this mode captured events can also be edited. Sent events while on this mode won't be deleted until the drop button is pressed.
 
-- [FIWARE Mashup](https://mashup.lab.fiware.org/)
+The output data will be sent with the type defined by the type selector.
 
 ## Copyright and License
 
