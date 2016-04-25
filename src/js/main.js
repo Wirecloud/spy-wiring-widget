@@ -223,18 +223,15 @@
                 stack.push(data);
                 MP.wiring.pushEvent(output, data);
                 return;
-            }
-
-            // Update the editor contents to view the next data
-            var next;
-            if (stack.length > 0) {
-                next = stack[stack.length - 1];
+            } else if (stack.length > 0) {
+                // Update the editor contents to view the next data
+                var next = stack[stack.length - 1];
+                updateStackInfo();
+                parse_data(next);
             } else {
+                // No events left
                 clearEvents();
-                return;
             }
-            updateStackInfo();
-            parse_data(next);
         }
         MP.wiring.pushEvent(output, data);
     };
