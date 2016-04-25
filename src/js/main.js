@@ -169,8 +169,11 @@
         editor.options.modes = ['text'];
         editor.setMode('text');
         editor.setText('');
-        // Add the loading animation
-        layout.getCenterContainer().disable();
+        // Add the loading animation.
+        // If allow send is enabled means the last event was dropped, but you are still on editor mode.
+        if (!allowsend)  {
+            layout.getCenterContainer().disable();
+        }
         stack = [];
         updateStackInfo();
     };
@@ -215,13 +218,17 @@
                 data = editordata;
             }
 
+            // If on send mode, send the data without updating view
+            if (allowsend) {
+                stack.push(data);
+                MP.wiring.pushEvent(output, data);
+                return;
+            }
+
             // Update the editor contents to view the next data
             var next;
             if (stack.length > 0) {
                 next = stack[stack.length - 1];
-            } else if (allowsend) {
-                next = data;
-                stack.push(data);
             } else {
                 clearEvents();
                 return;
@@ -244,7 +251,7 @@
         if (allowsend) {
             playbtn.setDisabled(true);
             runbtn.setDisabled(true);
-            dropbtn.setDisabled(true);
+            dropbtn.setDisabled(false);
             stepbtn.setDisabled(false);
         }
     };
@@ -288,7 +295,7 @@
 
     var drop_action = function () {
         if (stack.length > 0) {
-            stack.shift();
+            stack.pop();
             var next;
             if (stack.length > 0) {
                 next = stack[stack.length - 1];
