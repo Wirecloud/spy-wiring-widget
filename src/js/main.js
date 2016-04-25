@@ -37,7 +37,7 @@
 
     var stack = [];
 
-    var select;
+    var typeSelector;
 
     var init = function init () {
         layout = new StyledElements.BorderLayout();
@@ -51,7 +51,7 @@
         var parent = typed.parentNode;
         parent.removeChild(typed);
         createTypeSelectors();
-        select.insertInto(parent);
+        typeSelector.insertInto(parent);
 
         // Create the remaining events count
         stack_n = document.createElement('div');
@@ -88,8 +88,6 @@
         layout.getCenterContainer().addClassName('jsoncontainer');
         editor = new JSONEditor(layout.getCenterContainer().wrapperElement, options);
 
-
-
         updateContent('No data');
 
         layout.repaint();
@@ -112,12 +110,12 @@
 
     // Sets a value for the data-type selector
     var updateType = function updateType(type) {
-        select.setValue(type);
+        typeSelector.setValue(type);
     };
 
-    //Create the selectors to choose the type of the output data
+    //Create the selector to choose the type of the output data
     var createTypeSelectors = function createTypeSelectors () {
-        select = new StyledElements.Select();
+        typeSelector = new StyledElements.Select();
 
         var entries = [
             {label: "JSON - (Text)", value: "JSON - (Text)"},
@@ -125,11 +123,8 @@
             {label: "Text", value: "Text"}
         ];
 
-        select.addEntries(entries);
-        select.setValue("JSON - (Text)");
-
-        return select;
-
+        typeSelector.addEntries(entries);
+        typeSelector.setValue("JSON - (Text)");
     };
 
     var parse_json = function parse_json(json, type) {
@@ -193,15 +188,24 @@
         setdisable_btns(stack.length === 0);
     };
 
-    var sendData = function (type, data) {
+    var sendData = function (output, data) {
+        // Data is undefined if it was called by the step / play events
         if (typeof data === "undefined") {
-            var editordata = editor.getText();
+            // Get the selected data type.
+            var editordata;
+            if (typeSelector.getValue() === "JSON - (Object)") {
+                editordata = editor.get(); // Object
+            } else {
+                editordata = editor.getText(); //JSON string / string
+            }
+
             data = stack.pop();
 
             if (data !== editordata) {
                 data = editordata;
             }
 
+            // Update the editor contents to view the next data
             var next = 'No data';
             if (stack.length > 0) {
                 next = stack[stack.length - 1];
@@ -214,7 +218,7 @@
         }
 
         if (data !== "No data") {
-            MP.wiring.pushEvent(type, data);
+            MP.wiring.pushEvent(output, data);
         }
     };
 
