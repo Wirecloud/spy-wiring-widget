@@ -88,10 +88,14 @@
         layout.getCenterContainer().addClassName('jsoncontainer');
         editor = new JSONEditor(layout.getCenterContainer().wrapperElement, options);
 
-        updateContent('No data');
+        //Create loading animation
+        layout.getCenterContainer().addClassName('loading');
+        layout.getCenterContainer().disable();
+
+        editor.setMode("text");
+        editor.setText('');
 
         layout.repaint();
-
 
         MP.wiring.registerCallback('textinput', function (data) {
             updateContent(data);
@@ -162,13 +166,19 @@
     };
 
     var clearEvents = function clearEvents() {
-        updateType('No data');
         editor.options.modes = ['text'];
         editor.setMode('text');
-        editor.setText('No data');
+        editor.setText('');
+        // Add the loading animation
+        layout.getCenterContainer().disable();
+        stack = [];
+        updateStackInfo();
     };
 
     var updateContent = function updateContent(d) {
+        // Remove the loading animation
+        layout.getCenterContainer().enable();
+
         if (recording) {
             stack.unshift(d);
             var n = parseInt(stack_n.textContent) + 1;
@@ -206,20 +216,20 @@
             }
 
             // Update the editor contents to view the next data
-            var next = 'No data';
+            var next;
             if (stack.length > 0) {
                 next = stack[stack.length - 1];
             } else if (allowsend) {
                 next = data;
                 stack.push(data);
+            } else {
+                clearEvents();
+                return;
             }
             updateStackInfo();
             parse_data(next);
         }
-
-        if (data !== "No data") {
-            MP.wiring.pushEvent(output, data);
-        }
+        MP.wiring.pushEvent(output, data);
     };
 
     var change_class = function (elem, c1, c2) {
@@ -245,12 +255,11 @@
         change_class(playbtn, 'btn-success', 'btn-danger');
         run_action();
         playbtn.setTitle('Start recording events');
-        parse_data('No data');
         setdisable_btns(true);
     };
 
     var pause_proxy = function () {
-        parse_data('No data');
+        clearEvents ();
         recording = true;
         change_class(playbtn, 'icon-circle', 'icon-stop');
         change_class(playbtn, 'btn-danger', 'btn-success');
@@ -277,16 +286,17 @@
         sendData(TEXT);
     };
 
-
     var drop_action = function () {
         if (stack.length > 0) {
             stack.shift();
-            var next = 'No data';
+            var next;
             if (stack.length > 0) {
                 next = stack[stack.length - 1];
+                updateStackInfo();
+                parse_data(next);
+            } else {
+                clearEvents();
             }
-            updateStackInfo();
-            parse_data(next);
         }
     };
 
