@@ -3,8 +3,6 @@ Spy Wiring widget
 
 The Spy Wiring widget is a WireCloud widget that provides an easy way to inspect the data that travels trough the wiring.
 
-Latest version of this widget is always [provided in FIWARE lab](https://store.lab.fiware.org/search/keyword/KurentoStarterKit) where you can make use of it on the [Mashup portal](https://mashup.lab.fiware.org/)
-
 Build
 -----
 
@@ -38,10 +36,6 @@ grunt
 ```
 
 If everything goes well, you will find a wgt file in the `build` folder.
-
-## Settings
-
-- `Allow send data`: If this preference is set to true, the widget enters the "allow-send mode" where new events can be created and sent events won't be destroyed.
 
 ## Wiring
 
