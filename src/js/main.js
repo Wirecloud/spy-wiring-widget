@@ -165,7 +165,7 @@
                 editor.setText(d);
             }
         } else {
-            parse_json(d, "JSON - Object)");
+            parse_json(d, "JSON - (Object)");
         }
     };
 
