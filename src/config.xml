@@ -22,9 +22,6 @@
     <inputendpoint name="textinput" type="text" label="Input" description="Data to be analyzed" friendcode="*"/>
     <outputendpoint name="textoutput" type="text" label="Output" description="" friendcode="*"/>
   </wiring>
-  <preferences>
-    <preference name="allowsend" label="Allow send data" description="Allow send data without receiving it" type="boolean" default="false"/>
-  </preferences>
   <contents src="index.html" useplatformstyle="true"/>
   <rendering height="470px" width="25%"/>
 </widget>

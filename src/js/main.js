@@ -24,10 +24,9 @@
     var layout;
     var stack_n;
 
-    var playbtn, runbtn, stepbtn, dropbtn;
+    var createbtn, playbtn, runbtn, stepbtn, dropbtn;
 
     var recording = false;
-    var allowsend = false;
 
     var modes = ['code', 'form', 'text', 'tree', 'view'];
 
@@ -60,6 +59,10 @@
         stack_n.textContent = '0';
 
         // Create and bind action buttons
+        createbtn = new StyledElements.StyledButton({'class': 'btn-info icon-file', 'title': 'Create new event'});
+        createbtn.insertInto(document.getElementById('buttons'));
+        createbtn.addEventListener("click", create_action);
+
         playbtn = new StyledElements.StyledButton({'class': 'btn-danger icon-circle', 'title': 'Start recording events'});
         playbtn.insertInto(document.getElementById('buttons'));
         playbtn.addEventListener("click", play_action);
@@ -106,10 +109,6 @@
         MP.widget.context.registerCallback(function (new_values) {
             layout.repaint();
         });
-
-        // Bind and load preferences
-        MP.prefs.registerCallback(loadprefs);
-        loadprefs();
     };
 
     // Sets a value for the data-type selector
@@ -168,12 +167,12 @@
     var clearEvents = function clearEvents() {
         editor.options.modes = ['text'];
         editor.setMode('text');
+        //editor.options.modes = modes;
+        //editor.setMode('text');
         editor.setText('');
         // Add the loading animation.
-        // If allow send is enabled means the last event was dropped, but you are still on editor mode.
-        if (!allowsend)  {
-            layout.getCenterContainer().disable();
-        }
+        layout.getCenterContainer().disable();
+
         stack = [];
         updateStackInfo();
     };
@@ -219,10 +218,11 @@
             }
 
             // If on send mode, send the data without updating view
-            if (allowsend) {
+            if (false) { //TODO
                 stack.push(data);
                 MP.wiring.pushEvent(output, data);
                 return;
+
             } else if (stack.length > 0) {
                 // Update the editor contents to view the next data
                 var next = stack[stack.length - 1];
@@ -245,12 +245,6 @@
         runbtn.setDisabled(value);
         stepbtn.setDisabled(value);
         dropbtn.setDisabled(value);
-        if (allowsend) {
-            playbtn.setDisabled(true);
-            runbtn.setDisabled(true);
-            dropbtn.setDisabled(false);
-            stepbtn.setDisabled(false);
-        }
     };
 
     var play_proxy = function () {
@@ -263,7 +257,7 @@
     };
 
     var pause_proxy = function () {
-        clearEvents ();
+        clearEvents (); //TODO
         recording = true;
         change_class(playbtn, 'icon-circle', 'icon-stop');
         change_class(playbtn, 'btn-danger', 'btn-success');
@@ -304,26 +298,21 @@
         }
     };
 
-    var loadprefs = function loadprefs(data) {
-        if (typeof data === "undefined") {
-            data = {};
-            data.allowsend = MP.prefs.get("allowsend");
+    // Creates a new event, going into record mode if not on it.
+    var create_action = function create_action () {
+        // If it was not recording
+        if (!recording) {
+            pause_proxy ();
         }
-
-        if ('allowsend' in data) {
-            allowsend = data.allowsend;
-            if (data.allowsend) {
-                pause_proxy();
-                updateContent("{}");
-                setdisable_btns(true);
-            } else {
-                drop_action();
-                play_proxy();
-                playbtn.setDisabled(false);
-            }
-        }
+        //Add a new view into the blank event while keeping previous events on the stack
+        stack.push("{}");
+        editor.setText("{}");
+        editor.options.modes = modes;
+        editor.setMode('tree');
+        updateStackInfo();
+        // Remove the loading animation
+        layout.getCenterContainer().enable();
     };
 
-    MP.prefs.registerCallback(loadprefs);
     $(document).ready(function () {init();});
 })();
