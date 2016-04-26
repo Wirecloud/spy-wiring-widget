@@ -24,6 +24,7 @@
   </wiring>
   <preferences>
     <preference name="recording" label="Recording by default" description="Start the widget in recording mode" type="boolean" default="false"/>
+    <preference name="keep-events" label="Keep events on send" description="If events should be keeped when they are sent while on recording mode. If set, to get the next event the drop button must be used" type="boolean" default="false"/>
   </preferences>
   <contents src="index.html" useplatformstyle="true"/>
   <rendering height="470px" width="25%"/>

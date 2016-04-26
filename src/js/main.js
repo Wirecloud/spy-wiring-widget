@@ -38,6 +38,8 @@
 
     var typeSelector;
 
+    var keepEvents;
+
     var init = function init () {
         layout = new StyledElements.BorderLayout();
         layout.insertInto(document.body);
@@ -102,6 +104,12 @@
         if (recording) {
             pause_proxy();
         }
+
+
+        MP.prefs.registerCallback(function (prefs) {
+            keepEvents = MP.prefs.get("keep-events");
+        });
+        keepEvents = MP.prefs.get("keep-events");
 
         layout.repaint();
 
@@ -224,7 +232,7 @@
             }
 
             // Keep sent event on the editor.
-            if (false) { //TODO
+            if (keepEvents) { //TODO
                 stack.push(data);
                 MP.wiring.pushEvent(output, data);
                 return;
