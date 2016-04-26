@@ -37,6 +37,10 @@ grunt
 
 If everything goes well, you will find a wgt file in the `build` folder.
 
+## Settings
+
+- `Recording by default`: Whether the widget starts on recording or playing mode.
+
 ## Wiring
 
 ### Input Endpoints

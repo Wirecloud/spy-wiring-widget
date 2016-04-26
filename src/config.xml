@@ -22,6 +22,9 @@
     <inputendpoint name="textinput" type="text" label="Input" description="Data to be analyzed" friendcode="*"/>
     <outputendpoint name="textoutput" type="text" label="Output" description="" friendcode="*"/>
   </wiring>
+  <preferences>
+    <preference name="recording" label="Recording by default" description="Start the widget in recording mode" type="boolean" default="false"/>
+  </preferences>
   <contents src="index.html" useplatformstyle="true"/>
   <rendering height="470px" width="25%"/>
 </widget>

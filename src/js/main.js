@@ -44,7 +44,6 @@
         layout.getNorthContainer().addClassName('header');
         layout.getNorthContainer().wrapperElement.innerHTML = '<h4 class="text-primary">Type: <span id="type-data">No data</span></h4><div id="buttons"></div>';
 
-
         // Create the data-type selector
         var typed = $("#type-data")[0];
         var parent = typed.parentNode;
@@ -97,6 +96,12 @@
 
         editor.setMode("text");
         editor.setText('');
+
+        // Check if it has to be on recording mode
+        recording = MP.prefs.get("recording");
+        if (recording) {
+            pause_proxy();
+        }
 
         layout.repaint();
 
@@ -160,7 +165,7 @@
                 editor.setText(d);
             }
         } else {
-            parse_json(d, "JSON - (Object)");
+            parse_json(d, "JSON - Object)");
         }
     };
 
@@ -218,7 +223,7 @@
                 data = editordata;
             }
 
-            // If on send mode, send the data without updating view
+            // Keep sent event on the editor.
             if (false) { //TODO
                 stack.push(data);
                 MP.wiring.pushEvent(output, data);

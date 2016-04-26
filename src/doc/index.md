@@ -12,6 +12,10 @@ The Spy Wiring widget is a WireCloud widget that provides an easy way to inspect
 
 - `Output`: The endpoint where the received data and new events will be sent.
 
+## Settings
+
+- `Recording by default`: Whether the widget starts on recording or playing mode.
+
 ## Usage
 
 Plug in the output endpoint you want to spy and it will be displayed on the widget.
