@@ -3,8 +3,10 @@ vX.X.X
 
 - Supports object events.
 - Dropdown selector to choose the output data type.
-- Allowsend mode always stores the current event instead of waiting until there are none left.
-- Allowsend mode now works with the drop button to loop through the events.
+- Removed the allowsend preference.
+- Added create event button to create new events.
+- Added `Recording by default` preference to start the widget in recording mode.
+- Added `Keep events on send` preference to keep events after being sent.
 - Fixed drop button dropping the last received event instead of the current event.
 - Fixed record/play button being disabled after toggling off the allowsend preference.
 
