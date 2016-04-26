@@ -49,10 +49,10 @@ If everything goes well, you will find a wgt file in the `build` folder.
 
 ## Usage
 
+## Usage
+
 Plug in the output endpoint you want to spy and it will be displayed on the widget.
 If the record mode is activated, data won't be sent forward until the step or run buttons are pressed. While on this mode, data can be edited and the modified data will be sent instead.
-
-If the `Allow send data` preference is set to true, new events can be created through the widget. While on this mode captured events can also be edited. Sent events while on this mode won't be deleted until the drop button is pressed.
 
 The output data will be sent with the type defined by the type selector.
 
