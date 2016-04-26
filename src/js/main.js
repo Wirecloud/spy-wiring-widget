@@ -191,6 +191,7 @@
             }
             setdisable_btns(false);
         } else {
+            stack = [d];
             parse_data(d);
         }
     };
@@ -257,8 +258,8 @@
     };
 
     var pause_proxy = function () {
-        clearEvents (); //TODO
         recording = true;
+        updateStackInfo(); // There might be an event on the editor before going into record mode.
         change_class(playbtn, 'icon-circle', 'icon-stop');
         change_class(playbtn, 'btn-danger', 'btn-success');
         playbtn.setTitle('Stop recording events (Launch all pending events)');
