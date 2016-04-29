@@ -108,6 +108,7 @@
 
         MP.prefs.registerCallback(function (prefs) {
             keepEvents = MP.prefs.get("keep-events");
+            setdisable_btns(stack.length === 0);
         });
         keepEvents = MP.prefs.get("keep-events");
 
@@ -256,7 +257,7 @@
     };
 
     var setdisable_btns = function (value) {
-        runbtn.setDisabled(value);
+        runbtn.setDisabled(value || keepEvents);
         stepbtn.setDisabled(value);
         dropbtn.setDisabled(value);
     };
