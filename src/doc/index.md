@@ -15,7 +15,6 @@ The Spy Wiring widget is a WireCloud widget that provides an easy way to inspect
 ## Settings
 
 - `Recording by default`: Whether the widget starts on recording or playing mode.
-- `Keep events on send`: If events should be keeped when they are sent while on recording mode. If set, to get the next event the drop button must be used.
 
 ## Usage
 

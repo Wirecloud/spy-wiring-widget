@@ -24,7 +24,7 @@
     var layout;
     var stack_n;
 
-    var createbtn, playbtn, runbtn, stepbtn, dropbtn;
+    var createbtn, playbtn, runbtn, stepbtn, sendbtn, dropbtn;
 
     var recording = false;
 
@@ -37,8 +37,6 @@
     var stack = [];
 
     var typeSelector;
-
-    var keepEvents;
 
     var init = function init () {
         layout = new StyledElements.BorderLayout();
@@ -60,20 +58,25 @@
         stack_n.textContent = '0';
 
         // Create and bind action buttons
-        createbtn = new StyledElements.StyledButton({'class': 'btn-info icon-file', 'title': 'Create new event'});
+        createbtn = new StyledElements.StyledButton({'class': 'btn-info fa fa-plus', 'title': 'Create new event'});
         createbtn.insertInto(document.getElementById('buttons'));
         createbtn.addEventListener("click", create_action);
 
-        playbtn = new StyledElements.StyledButton({'class': 'btn-danger icon-circle', 'title': 'Start recording events'});
+        playbtn = new StyledElements.StyledButton({'class': 'btn-danger fa fa-circle', 'title': 'Start recording events'});
         playbtn.insertInto(document.getElementById('buttons'));
         playbtn.addEventListener("click", play_action);
-        runbtn = new StyledElements.StyledButton({'class': 'btn-info icon-fast-forward', 'title': 'Launch all pending events'});
+        runbtn = new StyledElements.StyledButton({'class': 'btn-info fa fa-fast-forward', 'title': 'Launch all pending events'});
         runbtn.insertInto(document.getElementById('buttons'));
         runbtn.addEventListener('click', run_action);
-        stepbtn = new StyledElements.StyledButton({'class': 'btn-info icon-step-forward', 'title': 'Launch current event'});
+        stepbtn = new StyledElements.StyledButton({'class': 'btn-info fa fa-step-forward', 'title': 'Launch current event'});
         stepbtn.insertInto(document.getElementById('buttons'));
         stepbtn.addEventListener('click', step_action);
-        dropbtn = new StyledElements.StyledButton({'class': 'btn-info icon-trash', 'title': 'Drop current event'});
+
+        sendbtn = new StyledElements.StyledButton({'class': 'btn-info fa fa-play', 'title': 'Launch and keep current event'});
+        sendbtn.insertInto(document.getElementById('buttons'));
+        sendbtn.addEventListener('click', send_action);
+
+        dropbtn = new StyledElements.StyledButton({'class': 'btn-info fa fa-trash', 'title': 'Drop current event'});
         dropbtn.insertInto(document.getElementById('buttons'));
         dropbtn.addEventListener('click', drop_action);
         // Disable the buttons
@@ -104,13 +107,6 @@
         if (recording) {
             pause_proxy();
         }
-
-
-        MP.prefs.registerCallback(function (prefs) {
-            keepEvents = MP.prefs.get("keep-events");
-            setdisable_btns(stack.length === 0);
-        });
-        keepEvents = MP.prefs.get("keep-events");
 
         layout.repaint();
 
@@ -215,7 +211,7 @@
         setdisable_btns(stack.length === 0);
     };
 
-    var sendData = function (output, data) {
+    var sendData = function (output, data, keepEvents) {
         // Data is undefined if it was called by the step / play events
         if (typeof data === "undefined") {
             // Get the selected data type.
@@ -257,8 +253,9 @@
     };
 
     var setdisable_btns = function (value) {
-        runbtn.setDisabled(value || keepEvents);
+        runbtn.setDisabled(value);
         stepbtn.setDisabled(value);
+        sendbtn.setDisabled(value);
         dropbtn.setDisabled(value);
     };
 
@@ -297,6 +294,10 @@
 
     var step_action = function () {
         sendData(TEXT);
+    };
+
+    var send_action = function () {
+        sendData(TEXT, undefined, true);
     };
 
     var drop_action = function () {

@@ -6,7 +6,7 @@ vX.X.X
 - Removed the allowsend preference.
 - Added create event button to create new events.
 - Added `Recording by default` preference to start the widget in recording mode.
-- Added `Keep events on send` preference to keep events after being sent.
+- Added send and keep event button.
 - Fixed drop button dropping the last received event instead of the current event.
 - Fixed record/play button being disabled after toggling off the allowsend preference.
 
