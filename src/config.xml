@@ -19,11 +19,11 @@
       <feature name="StyledElements"/>
   </requirements>
   <wiring>
-    <inputendpoint name="textinput" type="text" label="Text Input" description="" friendcode="*"/>
-    <outputendpoint name="textoutput" type="text" label="Text output" description="" friendcode="*"/>
+    <inputendpoint name="textinput" type="text" label="Input" description="Data to be analyzed" friendcode="*"/>
+    <outputendpoint name="textoutput" type="text" label="Output" description="" friendcode="*"/>
   </wiring>
   <preferences>
-    <preference name="allowsend" label="Allow send data" description="Allow send data without receiving it" type="boolean" default="false"/>
+    <preference name="recording" label="Recording by default" description="Start the widget in recording mode" type="boolean" default="false"/>
   </preferences>
   <contents src="index.html" useplatformstyle="true"/>
   <rendering height="470px" width="25%"/>

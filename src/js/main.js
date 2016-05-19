@@ -21,61 +21,140 @@
     "use strict";
 
     var MP = MashupPlatform;
+    var layout;
+    var stack_n;
 
-    var layout = new StyledElements.BorderLayout();
-    layout.insertInto(document.body);
-    layout.getNorthContainer().addClassName('header');
-    layout.getNorthContainer().wrapperElement.innerHTML = '<h4 class="text-primary">Type: <span id="type-data">No data</span></h4><div id="buttons"></div>';
-
-    var typed = $("#type-data")[0];
-
-    var TEXT = 'textoutput';
-
-    var stack_n = document.createElement('div');
-    document.getElementById('buttons').appendChild(stack_n);
-    stack_n.className = 'badge badge-info';
-    stack_n.textContent = '0';
-    var playbtn = new StyledElements.StyledButton({'class': 'btn-danger icon-circle', 'title': 'Start recording events'});
-    playbtn.insertInto(document.getElementById('buttons'));
-    var runbtn = new StyledElements.StyledButton({'class': 'btn-info icon-fast-forward', 'title': 'Launch all pending events'});
-    runbtn.insertInto(document.getElementById('buttons'));
-    var stepbtn = new StyledElements.StyledButton({'class': 'btn-info icon-step-forward', 'title': 'Launch current event'});
-    stepbtn.insertInto(document.getElementById('buttons'));
-    var dropbtn = new StyledElements.StyledButton({'class': 'btn-info icon-trash', 'title': 'Drop current event'});
-    dropbtn.insertInto(document.getElementById('buttons'));
+    var createbtn, playbtn, runbtn, stepbtn, sendbtn, dropbtn;
 
     var recording = false;
 
-    var allowsend = false;
-
     var modes = ['code', 'form', 'text', 'tree', 'view'];
 
-    var options = {
-        mode: 'tree',
-        modes: modes,
-        error: function (err) {
-            window.alert(err.toString());
-        }
-    };
+    var TEXT = 'textoutput'; // Output endpoint
 
-    layout.getCenterContainer().addClassName('jsoncontainer');
-    var editor = new JSONEditor(layout.getCenterContainer().wrapperElement, options);
+    var editor;
 
     var stack = [];
 
+    var typeSelector;
+
+    var init = function init () {
+        layout = new StyledElements.BorderLayout();
+        layout.insertInto(document.body);
+        layout.getNorthContainer().addClassName('header');
+        layout.getNorthContainer().wrapperElement.innerHTML = '<h4 class="text-primary">Type: <span id="type-data">No data</span></h4><div id="buttons"></div>';
+
+        // Create the data-type selector
+        var typed = $("#type-data")[0];
+        var parent = typed.parentNode;
+        parent.removeChild(typed);
+        createTypeSelectors();
+        typeSelector.insertInto(parent);
+
+        // Create the remaining events count
+        stack_n = document.createElement('div');
+        document.getElementById('buttons').appendChild(stack_n);
+        stack_n.className = 'badge badge-info';
+        stack_n.textContent = '0';
+
+        // Create and bind action buttons
+        createbtn = new StyledElements.StyledButton({'class': 'btn-info fa fa-plus', 'title': 'Create new event'});
+        createbtn.insertInto(document.getElementById('buttons'));
+        createbtn.addEventListener("click", create_action);
+
+        playbtn = new StyledElements.StyledButton({'class': 'btn-danger fa fa-circle', 'title': 'Start recording events'});
+        playbtn.insertInto(document.getElementById('buttons'));
+        playbtn.addEventListener("click", play_action);
+        runbtn = new StyledElements.StyledButton({'class': 'btn-info fa fa-fast-forward', 'title': 'Launch all pending events'});
+        runbtn.insertInto(document.getElementById('buttons'));
+        runbtn.addEventListener('click', run_action);
+        stepbtn = new StyledElements.StyledButton({'class': 'btn-info fa fa-step-forward', 'title': 'Launch current event'});
+        stepbtn.insertInto(document.getElementById('buttons'));
+        stepbtn.addEventListener('click', step_action);
+
+        sendbtn = new StyledElements.StyledButton({'class': 'btn-info fa fa-play', 'title': 'Launch and keep current event'});
+        sendbtn.insertInto(document.getElementById('buttons'));
+        sendbtn.addEventListener('click', send_action);
+
+        dropbtn = new StyledElements.StyledButton({'class': 'btn-info fa fa-trash', 'title': 'Drop current event'});
+        dropbtn.insertInto(document.getElementById('buttons'));
+        dropbtn.addEventListener('click', drop_action);
+        // Disable the buttons
+        setdisable_btns(true);
+
+        // Set the editor options
+        var options = {
+            mode: 'tree',
+            modes: modes,
+            error: function (err) {
+                window.alert(err.toString());
+            }
+        };
+
+        //Create the editor
+        layout.getCenterContainer().addClassName('jsoncontainer');
+        editor = new JSONEditor(layout.getCenterContainer().wrapperElement, options);
+
+        //Create loading animation
+        layout.getCenterContainer().addClassName('loading');
+        layout.getCenterContainer().disable();
+
+        editor.setMode("text");
+        editor.setText('');
+
+        // Check if it has to be on recording mode
+        recording = MP.prefs.get("recording");
+        if (recording) {
+            pause_proxy();
+        }
+
+        layout.repaint();
+
+        MP.wiring.registerCallback('textinput', function (data) {
+            updateContent(data);
+            if (!recording) {
+                sendData(TEXT, data);
+            }
+        });
+        MP.widget.context.registerCallback(function (new_values) {
+            layout.repaint();
+        });
+    };
+
+    // Sets a value for the data-type selector
     var updateType = function updateType(type) {
-        typed.textContent = type;
+        typeSelector.setValue(type);
+    };
+
+    //Create the selector to choose the type of the output data
+    var createTypeSelectors = function createTypeSelectors () {
+        typeSelector = new StyledElements.Select();
+
+        var entries = [
+            {label: "JSON - (Text)", value: "JSON - (Text)"},
+            {label: "JSON - (Object)", value: "JSON - (Object)"},
+            {label: "Text", value: "Text"}
+        ];
+
+        typeSelector.addEntries(entries);
+        typeSelector.setValue("JSON - (Text)");
     };
 
     var parse_json = function parse_json(json, type) {
         editor.options.modes = modes;
         editor.set(json);
-        if (editor.options.mode === "text") {
+
+        if (editor.options.mode === "tree") {
+            editor.setMode("text"); //Force the editor to refresh, since if its already on tree mode it gets bugged (lol)
+            editor.setMode("tree");
+        } else if (editor.options.mode === "text") {
             editor.setMode("tree");
         }
+
         if (editor.options.mode !== 'code') {
             editor.expandAll();
         }
+
         updateType(type);
     };
 
@@ -96,13 +175,22 @@
     };
 
     var clearEvents = function clearEvents() {
-        updateType('No data');
         editor.options.modes = ['text'];
         editor.setMode('text');
-        editor.setText('No data');
+        //editor.options.modes = modes;
+        //editor.setMode('text');
+        editor.setText('');
+        // Add the loading animation.
+        layout.getCenterContainer().disable();
+
+        stack = [];
+        updateStackInfo();
     };
 
     var updateContent = function updateContent(d) {
+        // Remove the loading animation
+        layout.getCenterContainer().enable();
+
         if (recording) {
             stack.unshift(d);
             var n = parseInt(stack_n.textContent) + 1;
@@ -113,6 +201,7 @@
             }
             setdisable_btns(false);
         } else {
+            stack = [d];
             parse_data(d);
         }
     };
@@ -122,29 +211,40 @@
         setdisable_btns(stack.length === 0);
     };
 
-    var sendData = function (type, data) {
+    var sendData = function (output, data, keepEvents) {
+        // Data is undefined if it was called by the step / play events
         if (typeof data === "undefined") {
-            var editordata = editor.getText();
+            // Get the selected data type.
+            var editordata;
+            if (typeSelector.getValue() === "JSON - (Object)") {
+                editordata = editor.get(); // Object
+            } else {
+                editordata = editor.getText(); //JSON string / string
+            }
+
             data = stack.pop();
 
             if (data !== editordata) {
                 data = editordata;
             }
 
-            var next = 'No data';
-            if (stack.length > 0) {
-                next = stack[stack.length - 1];
-            } else if (allowsend) {
-                next = data;
+            // Keep sent event on the editor.
+            if (keepEvents) { //TODO
                 stack.push(data);
-            }
-            updateStackInfo();
-            parse_data(next);
-        }
+                MP.wiring.pushEvent(output, data);
+                return;
 
-        if (data !== "No data") {
-            MP.wiring.pushEvent(type, data);
+            } else if (stack.length > 0) {
+                // Update the editor contents to view the next data
+                var next = stack[stack.length - 1];
+                updateStackInfo();
+                parse_data(next);
+            } else {
+                // No events left
+                clearEvents();
+            }
         }
+        MP.wiring.pushEvent(output, data);
     };
 
     var change_class = function (elem, c1, c2) {
@@ -155,13 +255,8 @@
     var setdisable_btns = function (value) {
         runbtn.setDisabled(value);
         stepbtn.setDisabled(value);
+        sendbtn.setDisabled(value);
         dropbtn.setDisabled(value);
-        if (allowsend) {
-            playbtn.setDisabled(true);
-            runbtn.setDisabled(true);
-            dropbtn.setDisabled(true);
-            stepbtn.setDisabled(false);
-        }
     };
 
     var play_proxy = function () {
@@ -170,13 +265,12 @@
         change_class(playbtn, 'btn-success', 'btn-danger');
         run_action();
         playbtn.setTitle('Start recording events');
-        parse_data('No data');
         setdisable_btns(true);
     };
 
     var pause_proxy = function () {
-        parse_data('No data');
         recording = true;
+        updateStackInfo(); // There might be an event on the editor before going into record mode.
         change_class(playbtn, 'icon-circle', 'icon-stop');
         change_class(playbtn, 'btn-danger', 'btn-success');
         playbtn.setTitle('Stop recording events (Launch all pending events)');
@@ -202,59 +296,39 @@
         sendData(TEXT);
     };
 
+    var send_action = function () {
+        sendData(TEXT, undefined, true);
+    };
 
     var drop_action = function () {
         if (stack.length > 0) {
-            stack.shift();
-            var next = 'No data';
+            stack.pop();
+            var next;
             if (stack.length > 0) {
                 next = stack[stack.length - 1];
-            }
-            updateStackInfo();
-            parse_data(next);
-        }
-    };
-
-    setdisable_btns(true);
-    updateContent('No data');
-
-    playbtn.addEventListener("click", play_action);
-    runbtn.addEventListener('click', run_action);
-    stepbtn.addEventListener('click', step_action);
-    dropbtn.addEventListener('click', drop_action);
-
-    layout.repaint();
-
-    MP.wiring.registerCallback('textinput', function (data) {
-        updateContent(data);
-        if (!recording) {
-            sendData(TEXT, data);
-        }
-    });
-
-    MP.widget.context.registerCallback(function (new_values) {
-        layout.repaint();
-    });
-
-    var loadprefs = function loadprefs(data) {
-        if (typeof data === "undefined") {
-            data = {};
-            data.allowsend = MP.prefs.get("allowsend");
-        }
-
-        if ('allowsend' in data) {
-            allowsend = data.allowsend;
-            if (data.allowsend) {
-                pause_proxy();
-                updateContent("{}");
-                setdisable_btns(true);
+                updateStackInfo();
+                parse_data(next);
             } else {
-                drop_action();
-                play_proxy();
+                clearEvents();
             }
         }
     };
 
-    MP.prefs.registerCallback(loadprefs);
-    $(document).ready(function () {loadprefs();});
+    // Creates a new event, going into record mode if not on it.
+    var create_action = function create_action () {
+        // If it was not recording
+        if (!recording) {
+            pause_proxy ();
+        }
+        //Add a new view into the blank event while keeping previous events on the stack
+        stack.push("{}");
+        editor.setText("{}");
+        editor.options.modes = modes;
+        editor.setMode('tree');
+        updateStackInfo();
+        // Remove the loading animation
+        layout.getCenterContainer().enable();
+    };
+
+    $(document).ready(function () {init();});
 })();

@@ -3,8 +3,6 @@ Spy Wiring widget
 
 The Spy Wiring widget is a WireCloud widget that provides an easy way to inspect the data that travels trough the wiring.
 
-Latest version of this widget is always [provided in FIWARE lab](https://store.lab.fiware.org/search/keyword/KurentoStarterKit) where you can make use of it on the [Mashup portal](https://mashup.lab.fiware.org/)
-
 Build
 -----
 
@@ -41,27 +39,26 @@ If everything goes well, you will find a wgt file in the `build` folder.
 
 ## Settings
 
-`Write here the preferences`
+- `Recording by default`: Whether the widget starts on recording or playing mode.
 
 ## Wiring
 
-
 ### Input Endpoints
 
-`Write here the input wiring endpoints`
-
+- `Input`: The data to be analyzed.
 
 ### Output Endpoints
 
-
-`Write here the output wiring endpoints`
+- `Output`: The endpoint where the received data will be sent.
 
 ## Usage
 
+## Usage
 
-## Reference
+Plug in the output endpoint you want to spy and it will be displayed on the widget.
+If the record mode is activated, data won't be sent forward until the step or run buttons are pressed. While on this mode, data can be edited and the modified data will be sent instead.
 
-- [FIWARE Mashup](https://mashup.lab.fiware.org/)
+The output data will be sent with the type defined by the type selector.
 
 ## Copyright and License
 
