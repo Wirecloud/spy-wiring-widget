@@ -38,11 +38,13 @@
 
     var typeSelector;
 
-    var init = function init () {
-        layout = new StyledElements.BorderLayout();
+    var init = function init() {
+        var action_buttons;
+
+        layout = new StyledElements.VerticalLayout();
         layout.insertInto(document.body);
-        layout.getNorthContainer().addClassName('header');
-        layout.getNorthContainer().wrapperElement.innerHTML = '<h4 class="text-primary">Type: <span id="type-data">No data</span></h4><div id="buttons"></div>';
+        layout.north.addClassName('header');
+        layout.north.appendChild(new StyledElements.Fragment('<h4 class="text-primary">Type: <span id="type-data">No data</span><div id="buttons"></div></h4>'));
 
         // Create the data-type selector
         var typed = $("#type-data")[0];
@@ -58,27 +60,28 @@
         stack_n.textContent = '0';
 
         // Create and bind action buttons
-        createbtn = new StyledElements.StyledButton({'class': 'btn-info fa fa-plus', 'title': 'Create new event'});
-        createbtn.insertInto(document.getElementById('buttons'));
-        createbtn.addEventListener("click", create_action);
+        action_buttons = document.createElement('div');
+        action_buttons.className = 'btn-group';
+        document.getElementById('buttons').appendChild(action_buttons);
 
         playbtn = new StyledElements.StyledButton({'class': 'btn-danger fa fa-circle', 'title': 'Start recording events'});
-        playbtn.insertInto(document.getElementById('buttons'));
-        playbtn.addEventListener("click", play_action);
+        playbtn.addEventListener("click", play_action).insertInto(action_buttons);
+
+        createbtn = new StyledElements.StyledButton({'class': 'btn-info fa fa-plus', 'title': 'Create new event'});
+        createbtn.addEventListener("click", create_action).insertInto(action_buttons);
+
         runbtn = new StyledElements.StyledButton({'class': 'btn-info fa fa-fast-forward', 'title': 'Launch all pending events'});
-        runbtn.insertInto(document.getElementById('buttons'));
-        runbtn.addEventListener('click', run_action);
+        runbtn.addEventListener('click', run_action).insertInto(action_buttons);
+
         stepbtn = new StyledElements.StyledButton({'class': 'btn-info fa fa-step-forward', 'title': 'Launch current event'});
-        stepbtn.insertInto(document.getElementById('buttons'));
-        stepbtn.addEventListener('click', step_action);
+        stepbtn.addEventListener('click', step_action).insertInto(action_buttons);
 
         sendbtn = new StyledElements.StyledButton({'class': 'btn-info fa fa-play', 'title': 'Launch and keep current event'});
-        sendbtn.insertInto(document.getElementById('buttons'));
-        sendbtn.addEventListener('click', send_action);
+        sendbtn.addEventListener('click', send_action).insertInto(action_buttons);
 
         dropbtn = new StyledElements.StyledButton({'class': 'btn-info fa fa-trash', 'title': 'Drop current event'});
-        dropbtn.insertInto(document.getElementById('buttons'));
-        dropbtn.addEventListener('click', drop_action);
+        dropbtn.addEventListener('click', drop_action).insertInto(action_buttons);
+
         // Disable the buttons
         setdisable_btns(true);
 
@@ -92,12 +95,11 @@
         };
 
         //Create the editor
-        layout.getCenterContainer().addClassName('jsoncontainer');
-        editor = new JSONEditor(layout.getCenterContainer().wrapperElement, options);
+        layout.center.addClassName('jsoncontainer');
+        editor = new JSONEditor(layout.center.wrapperElement, options);
 
         //Create loading animation
-        layout.getCenterContainer().addClassName('loading');
-        layout.getCenterContainer().disable();
+        layout.center.addClassName('loading').disable();
 
         editor.setMode("text");
         editor.setText('');
@@ -181,7 +183,7 @@
         //editor.setMode('text');
         editor.setText('');
         // Add the loading animation.
-        layout.getCenterContainer().disable();
+        layout.center.disable();
 
         stack = [];
         updateStackInfo();
@@ -189,7 +191,7 @@
 
     var updateContent = function updateContent(d) {
         // Remove the loading animation
-        layout.getCenterContainer().enable();
+        layout.center.enable();
 
         if (recording) {
             stack.unshift(d);
@@ -327,7 +329,7 @@
         editor.setMode('tree');
         updateStackInfo();
         // Remove the loading animation
-        layout.getCenterContainer().enable();
+        layout.center.enable();
     };
 
     $(document).ready(function () {init();});

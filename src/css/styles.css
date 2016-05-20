@@ -9,8 +9,12 @@ html, body {
 }
 
 .text-primary {
-    float: left;
     margin-left: 10px;
+    margin-right: 10px;
+}
+
+.text-primary > .se-select {
+    margin-bottom: 0px;
 }
 
 #buttons {
