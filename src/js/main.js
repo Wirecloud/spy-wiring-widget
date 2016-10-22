@@ -90,7 +90,7 @@
             mode: 'tree',
             modes: modes,
             error: function (err) {
-                window.alert(err.toString());
+                MP.widget.log(err.toString());
             }
         };
 
