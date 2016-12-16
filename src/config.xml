@@ -13,7 +13,7 @@
     <homepage>https://github.com/Wirecloud/spy-wiring-widget</homepage>
     <issuetracker>https://github.com/Wirecloud/spy-wiring-widget/issues</issuetracker>
     <changelog>doc/changelog.md</changelog>
-    <doc>doc/index.md</doc>
+    <doc>doc/userguide.md</doc>
   </details>
   <requirements>
       <feature name="StyledElements"/>
