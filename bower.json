@@ -1,20 +1,6 @@
 {
-    "name": "SpyWiring",
-    "dependencies": {
-        "jquery": "~2.1.4",
-        "jsoneditor": "4.2.1"
-    },
-    "exportsOverride": {
-        "jsoneditor": {
-            "js": "dist/jsoneditor.min.js",
-            "css": "dist/jsoneditor.min.css",
-            "css/img": "dist/img"
-        },
-        "jquery": {
-            "js": "dist/jquery.min.js"
-        }
-    },
-    "devDependencies": {
-        "mock-applicationmashup": null
-    }
+  "name": "widgetPlantilla",
+  "dependencies": {},
+  "devDependencies": {},
+  "exportsOverride": {}
 }

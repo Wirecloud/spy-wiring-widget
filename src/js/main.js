@@ -94,11 +94,11 @@
             }
         };
 
-        //Create the editor
+        // Create the editor
         layout.center.addClassName('jsoncontainer');
         editor = new JSONEditor(layout.center.wrapperElement, options);
 
-        //Create loading animation
+        // Create loading animation
         layout.center.addClassName('loading').disable();
 
         editor.setMode("text");
@@ -128,8 +128,8 @@
         typeSelector.setValue(type);
     };
 
-    //Create the selector to choose the type of the output data
-    var createTypeSelectors = function createTypeSelectors () {
+    // Create the selector to choose the type of the output data
+    var createTypeSelectors = function createTypeSelectors() {
         typeSelector = new StyledElements.Select();
 
         var entries = [
@@ -147,7 +147,7 @@
         editor.set(json);
 
         if (editor.options.mode === "tree") {
-            editor.setMode("text"); //Force the editor to refresh, since if its already on tree mode it gets bugged (lol)
+            editor.setMode("text"); // Force the editor to refresh, since if its already on tree mode it gets bugged (lol)
             editor.setMode("tree");
         } else if (editor.options.mode === "text") {
             editor.setMode("tree");
@@ -179,8 +179,8 @@
     var clearEvents = function clearEvents() {
         editor.options.modes = ['text'];
         editor.setMode('text');
-        //editor.options.modes = modes;
-        //editor.setMode('text');
+        // editor.options.modes = modes;
+        // editor.setMode('text');
         editor.setText('');
         // Add the loading animation.
         layout.center.disable();
@@ -221,7 +221,7 @@
             if (typeSelector.getValue() === "JSON - (Object)") {
                 editordata = editor.get(); // Object
             } else {
-                editordata = editor.getText(); //JSON string / string
+                editordata = editor.getText(); // JSON string / string
             }
 
             data = stack.pop();
@@ -231,7 +231,7 @@
             }
 
             // Keep sent event on the editor.
-            if (keepEvents) { //TODO
+            if (keepEvents) { // TODO
                 stack.push(data);
                 MP.wiring.pushEvent(output, data);
                 return;
@@ -317,12 +317,12 @@
     };
 
     // Creates a new event, going into record mode if not on it.
-    var create_action = function create_action () {
+    var create_action = function create_action() {
         // If it was not recording
         if (!recording) {
-            pause_proxy ();
+            pause_proxy();
         }
-        //Add a new view into the blank event while keeping previous events on the stack
+        // Add a new view into the blank event while keeping previous events on the stack
         stack.push("{}");
         editor.setText("{}");
         editor.options.modes = modes;
