@@ -23,7 +23,7 @@
     <outputendpoint name="textoutput" type="text" label="Output" description="" friendcode="*"/>
   </wiring>
   <preferences>
-    <preference name="recording" label="Recording by default" description="Start the widget in recording mode" type="boolean" default="false"/>
+    <preference name="recording" label="Start recording" description="Start the widget in recording mode" type="boolean" default="false"/>
   </preferences>
   <contents src="index.html" useplatformstyle="true"/>
   <rendering height="470px" width="25%"/>

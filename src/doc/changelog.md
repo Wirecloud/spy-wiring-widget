@@ -1,20 +1,16 @@
-vX.X.X
-======
-
-- Supports object events.
-- Dropdown selector to choose the output data type.
-- Removed the allowsend preference.
-- Added create event button to create new events.
-- Added `Recording by default` preference to start the widget in recording mode.
-- Added send and keep event button.
-- Fixed drop button dropping the last received event instead of the current event.
-- Fixed record/play button being disabled after toggling off the allowsend preference.
-
 v1.0.2
 ======
 
 - Add initial object event support
 - Fix Type label
+- Supports object events.
+- Dropdown selector to choose the output data type.
+- Removed the allowsend preference.
+- Added create event button to create new events.
+- Added `Start recording` preference to start the widget in recording mode.
+- Added send and keep event button.
+- Fixed drop button dropping the last received event instead of the current event.
+- Fixed record/play button being disabled after toggling off the allowsend preference.
 
 v1.0.1
 ======

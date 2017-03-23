@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 CoNWeT Lab., Universidad Politécnica de Madrid
+ * Copyright (c) 2013-2017 CoNWeT Lab., Universidad Politécnica de Madrid
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -217,18 +217,13 @@
         // Data is undefined if it was called by the step / play events
         if (typeof data === "undefined") {
             // Get the selected data type.
-            var editordata;
             if (typeSelector.getValue() === "JSON - (Object)") {
-                editordata = editor.get(); // Object
+                data = editor.get(); // Object
             } else {
-                editordata = editor.getText(); // JSON string / string
+                data = editor.getText(); // JSON string / string
             }
 
-            data = stack.pop();
-
-            if (data !== editordata) {
-                data = editordata;
-            }
+            stack.pop();
 
             // Keep sent event on the editor.
             if (keepEvents) { // TODO
@@ -237,7 +232,6 @@
                 return;
 
             } else if (stack.length > 0) {
-                // Update the editor contents to view the next data
                 var next = stack[stack.length - 1];
                 updateStackInfo();
                 parse_data(next);
@@ -245,6 +239,9 @@
                 // No events left
                 clearEvents();
             }
+            // Update the editor contents to view the next data
+            createbtn.replaceClassName("btn-warning", "btn-info");
+            createbtn.enable();
         }
         MP.wiring.pushEvent(output, data);
     };
@@ -304,6 +301,9 @@
 
     var drop_action = function () {
         if (stack.length > 0) {
+            createbtn.replaceClassName("btn-warning", "btn-info");
+            createbtn.enable();
+
             stack.pop();
             var next;
             if (stack.length > 0) {
@@ -322,6 +322,21 @@
         if (!recording) {
             pause_proxy();
         }
+
+        if (stack.length > 0) {
+            var data;
+            if (typeSelector.getValue() === "JSON - (Object)") {
+                data = editor.get(); // Object
+            } else {
+                data = editor.getText(); // JSON string / string
+            }
+            stack.pop();
+            stack.push(data);
+        }
+
+        createbtn.replaceClassName("btn-info", "btn-warning");
+        createbtn.disable();
+
         // Add a new view into the blank event while keeping previous events on the stack
         stack.push("{}");
         editor.setText("{}");
