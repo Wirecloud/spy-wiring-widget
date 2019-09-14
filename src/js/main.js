@@ -64,22 +64,22 @@
         action_buttons.className = 'btn-group';
         document.getElementById('buttons').appendChild(action_buttons);
 
-        playbtn = new StyledElements.Button({'class': 'btn-danger fa fa-circle', 'title': 'Start recording events'});
+        playbtn = new StyledElements.Button({'class': 'btn-danger', 'iconClass': 'fa fa-circle', 'title': 'Start recording events'});
         playbtn.addEventListener("click", play_action).insertInto(action_buttons);
 
-        createbtn = new StyledElements.Button({'class': 'btn-info fa fa-plus', 'title': 'Create new event'});
+        createbtn = new StyledElements.Button({'class': 'btn-info', 'iconClass': 'fa fa-plus', 'title': 'Create new event'});
         createbtn.addEventListener("click", create_action).insertInto(action_buttons);
 
-        runbtn = new StyledElements.Button({'class': 'btn-info fa fa-fast-forward', 'title': 'Launch all pending events'});
+        runbtn = new StyledElements.Button({'class': 'btn-info', 'iconClass': 'fa fa-fast-forward', 'title': 'Launch all pending events'});
         runbtn.addEventListener('click', run_action).insertInto(action_buttons);
 
-        stepbtn = new StyledElements.Button({'class': 'btn-info fa fa-step-forward', 'title': 'Launch current event'});
+        stepbtn = new StyledElements.Button({'class': 'btn-info', 'iconClass': 'fa fa-step-forward', 'title': 'Launch current event'});
         stepbtn.addEventListener('click', step_action).insertInto(action_buttons);
 
-        sendbtn = new StyledElements.Button({'class': 'btn-info fa fa-play', 'title': 'Launch and keep current event'});
+        sendbtn = new StyledElements.Button({'class': 'btn-info', 'iconClass': 'fa fa-play', 'title': 'Launch and keep current event'});
         sendbtn.addEventListener('click', send_action).insertInto(action_buttons);
 
-        dropbtn = new StyledElements.Button({'class': 'btn-info fa fa-trash', 'title': 'Drop current event'});
+        dropbtn = new StyledElements.Button({'class': 'btn-info', 'iconClass': 'fa fa-trash', 'title': 'Drop current event'});
         dropbtn.addEventListener('click', drop_action).insertInto(action_buttons);
 
         // Disable the buttons
