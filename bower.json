@@ -1,6 +1,18 @@
 {
   "name": "spy-wiring",
-  "dependencies": {},
+  "dependencies": {
+    "jquery": "2.1.4",
+    "jsoneditor": "4.2.1"
+  },
   "devDependencies": {},
-  "exportsOverride": {}
+  "exportsOverride": {
+    "jquery": {
+      "js": "dist/jquery.min.js"
+    },
+    "jsoneditor": {
+      "js": "dist/jsoneditor.min.js",
+      "css": "dist/jsoneditor.min.css",
+      "img": "dist/img/jsoneditor-icons.png"
+    }
+  }
 }
