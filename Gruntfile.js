@@ -10,18 +10,23 @@ module.exports = function (grunt) {
 
     'use strict';
 
+    var path = require('path');
+
     grunt.initConfig({
 
         isDev: grunt.option('dev') ? '-dev' : '',
         metadata: parser.getData(),
 
+
         bower: {
             install: {
                 options: {
                     layout: function (type, component, source) {
-                        return type;
+                        return (component === 'jsoneditor' && type === 'img')
+                            ? path.join('css', type) : type;
                     },
-                    targetDir: './build/lib/lib'
+                    targetDir: './build/lib/lib',
+                    copy: true
                 }
             }
         },
