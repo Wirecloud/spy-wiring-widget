@@ -39,51 +39,80 @@
     var typeSelector;
 
     var init = function init() {
-        var action_buttons;
-
-        layout = new StyledElements.VerticalLayout();
-        layout.insertInto(document.body);
-        layout.north.addClassName('header');
-        layout.north.appendChild(new StyledElements.Fragment('<h4 class="text-primary">Type: <span id="type-data">No data</span><div id="buttons"></div></h4>'));
+        var builder = new StyledElements.GUIBuilder();
 
         // Create the data-type selector
-        var typed = $("#type-data")[0];
-        var parent = typed.parentNode;
-        parent.removeChild(typed);
         createTypeSelectors();
-        typeSelector.insertInto(parent);
+
+        var buttons = document.createElement('div');
+        buttons.className = "buttons";
 
         // Create the remaining events count
         stack_n = document.createElement('div');
-        document.getElementById('buttons').appendChild(stack_n);
+        buttons.appendChild(stack_n);
         stack_n.className = 'badge badge-info';
         stack_n.textContent = '0';
 
         // Create and bind action buttons
-        action_buttons = document.createElement('div');
+        var action_buttons = document.createElement('div');
         action_buttons.className = 'btn-group';
-        document.getElementById('buttons').appendChild(action_buttons);
+        buttons.appendChild(action_buttons);
 
-        playbtn = new StyledElements.Button({'class': 'btn-danger', 'iconClass': 'fa fa-circle', 'title': 'Start recording events'});
+        playbtn = new StyledElements.Button({
+            iconClass: 'fas fa-circle',
+            state: 'danger',
+            title: 'Start recording events'
+        });
         playbtn.addEventListener("click", play_action).insertInto(action_buttons);
 
-        createbtn = new StyledElements.Button({'class': 'btn-info', 'iconClass': 'fa fa-plus', 'title': 'Create new event'});
+        createbtn = new StyledElements.Button({
+            iconClass: 'fas fa-plus',
+            state: 'info',
+            title: 'Create new event'
+        });
         createbtn.addEventListener("click", create_action).insertInto(action_buttons);
 
-        runbtn = new StyledElements.Button({'class': 'btn-info', 'iconClass': 'fa fa-fast-forward', 'title': 'Launch all pending events'});
+        runbtn = new StyledElements.Button({
+            iconClass: 'fas fa-fast-forward',
+            state: 'info',
+            title: 'Launch all pending events'
+        });
         runbtn.addEventListener('click', run_action).insertInto(action_buttons);
 
-        stepbtn = new StyledElements.Button({'class': 'btn-info', 'iconClass': 'fa fa-step-forward', 'title': 'Launch current event'});
+        stepbtn = new StyledElements.Button({
+            iconClass: 'fas fa-step-forward',
+            state: 'info',
+            title: 'Launch current event'
+        });
         stepbtn.addEventListener('click', step_action).insertInto(action_buttons);
 
-        sendbtn = new StyledElements.Button({'class': 'btn-info', 'iconClass': 'fa fa-play', 'title': 'Launch and keep current event'});
+        sendbtn = new StyledElements.Button({
+            iconClass: 'fas fa-play',
+            state: 'info',
+            title: 'Launch and keep current event'
+        });
         sendbtn.addEventListener('click', send_action).insertInto(action_buttons);
 
-        dropbtn = new StyledElements.Button({'class': 'btn-info', 'iconClass': 'fa fa-trash', 'title': 'Drop current event'});
+        dropbtn = new StyledElements.Button({
+            iconClass: 'fas fa-trash',
+            state: 'danger',
+            title: 'Drop current event'
+        });
         dropbtn.addEventListener('click', drop_action).insertInto(action_buttons);
 
         // Disable the buttons
         setdisable_btns(true);
+
+        layout = new StyledElements.VerticalLayout();
+        layout.insertInto(document.body);
+        layout.north.addClassName('header');
+        layout.north.appendChild(builder.parse(
+            builder.DEFAULT_OPENING + '<h4 class="text-primary"><div class="type-selector">Type: <t:typeSelector/></div><t:buttons/></h4>' + builder.DEFAULT_CLOSING,
+            {
+                buttons: buttons,
+                typeSelector: typeSelector
+            }
+        ));
 
         // Set the editor options
         var options = {
@@ -121,6 +150,7 @@
         MP.widget.context.registerCallback(function (new_values) {
             layout.repaint();
         });
+
     };
 
     // Sets a value for the data-type selector
@@ -240,15 +270,10 @@
                 clearEvents();
             }
             // Update the editor contents to view the next data
-            createbtn.replaceClassName("btn-warning", "btn-info");
+            createbtn.state = "info";
             createbtn.enable();
         }
         MP.wiring.pushEvent(output, data);
-    };
-
-    var change_class = function (elem, c1, c2) {
-        elem.removeClassName(c1);
-        elem.addClassName(c2);
     };
 
     var setdisable_btns = function (value) {
@@ -260,8 +285,7 @@
 
     var play_proxy = function () {
         recording = false;
-        change_class(playbtn, 'icon-stop', 'icon-circle');
-        change_class(playbtn, 'btn-success', 'btn-danger');
+        playbtn.replaceIconClassName('fa-stop', 'fa-circle').state = "danger";
         run_action();
         playbtn.setTitle('Start recording events');
         setdisable_btns(true);
@@ -270,8 +294,7 @@
     var pause_proxy = function () {
         recording = true;
         updateStackInfo(); // There might be an event on the editor before going into record mode.
-        change_class(playbtn, 'icon-circle', 'icon-stop');
-        change_class(playbtn, 'btn-danger', 'btn-success');
+        playbtn.replaceIconClassName('fa-circle', 'fa-stop').state = "success";
         playbtn.setTitle('Stop recording events (Launch all pending events)');
     };
 
@@ -301,7 +324,7 @@
 
     var drop_action = function () {
         if (stack.length > 0) {
-            createbtn.replaceClassName("btn-warning", "btn-info");
+            createbtn.state = "info";
             createbtn.enable();
 
             stack.pop();
@@ -334,7 +357,7 @@
             stack.push(data);
         }
 
-        createbtn.replaceClassName("btn-info", "btn-warning");
+        createbtn.state = "warning";
         createbtn.disable();
 
         // Add a new view into the blank event while keeping previous events on the stack
