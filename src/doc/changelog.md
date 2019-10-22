@@ -1,3 +1,9 @@
+## v1.0.3 (2019-10-22)
+
+- Update Font Awesome icons to v5 (WireCloud v1.3+)
+- Include license file
+
+
 ## v1.0.2 (2017-03-23)
 
 - Add initial object event support
